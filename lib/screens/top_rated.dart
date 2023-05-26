@@ -12,7 +12,10 @@ class TopRatedMovies extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text('Top Rated Movies',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+              style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20)),
           SizedBox(height: 10),
           Container(
               height: 270,
@@ -32,7 +35,8 @@ class TopRatedMovies extends StatelessWidget {
                           "release":
                               topratedmovies[index]["release_date"].toString(),
                           "bannerurl": 'https://image.tmdb.org/t/p/w500' +
-                              topratedmovies[index]["backdrop_path"]
+                              topratedmovies[index]["backdrop_path"],
+                          "id": topratedmovies[index]["id"]
                         });
                       },
                       child: topratedmovies[index]["title"] != null
@@ -54,9 +58,11 @@ class TopRatedMovies extends StatelessWidget {
                                   SizedBox(height: 5),
                                   Container(
                                     child: Text(
-                                        topratedmovies[index]['title'] != null
-                                            ? topratedmovies[index]['title']
-                                            : 'Loading'),
+                                      topratedmovies[index]['title'] != null
+                                          ? topratedmovies[index]['title']
+                                          : 'Loading',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
                                   )
                                 ],
                               ),

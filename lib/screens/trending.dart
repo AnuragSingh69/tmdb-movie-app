@@ -12,7 +12,10 @@ class TrendingMovies extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text('Trending Movies',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+              style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20)),
           SizedBox(height: 10),
           Container(
               height: 270,
@@ -32,7 +35,8 @@ class TrendingMovies extends StatelessWidget {
                           "release":
                               trendingmovies[index]["release_date"].toString(),
                           "bannerurl": 'https://image.tmdb.org/t/p/w500' +
-                              trendingmovies[index]["backdrop_path"]
+                              trendingmovies[index]["backdrop_path"],
+                          "id": trendingmovies[index]["id"]
                         });
                       },
                       child: trendingmovies[index]["title"] != null
@@ -54,9 +58,11 @@ class TrendingMovies extends StatelessWidget {
                                   SizedBox(height: 5),
                                   Container(
                                     child: Text(
-                                        trendingmovies[index]['title'] != null
-                                            ? trendingmovies[index]['title']
-                                            : 'Loading'),
+                                      trendingmovies[index]['title'] != null
+                                          ? trendingmovies[index]['title']
+                                          : 'Loading',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
                                   )
                                 ],
                               ),

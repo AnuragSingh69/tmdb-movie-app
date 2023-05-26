@@ -12,7 +12,10 @@ class TV extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text('Popular TV Shows',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+              style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20)),
           SizedBox(height: 10),
           Container(
               height: 270,
@@ -31,7 +34,8 @@ class TV extends StatelessWidget {
                           "rating": tvshows[index]["vote_average"],
                           "release": tvshows[index]["release_date"].toString(),
                           "bannerurl": 'https://image.tmdb.org/t/p/w500' +
-                              tvshows[index]["backdrop_path"]
+                              tvshows[index]["backdrop_path"],
+                          "id": tvshows[index]["id"]
                         });
                       },
                       child: tvshows[index]["original_name"] != null
@@ -51,11 +55,12 @@ class TV extends StatelessWidget {
                                   ),
                                   SizedBox(height: 5),
                                   Container(
-                                    child: Text(
-                                        tvshows[index]['original_name'] != null
-                                            ? tvshows[index]['original_name']
-                                            : 'Loading'),
-                                  )
+                                      child: Text(
+                                    tvshows[index]['original_name'] != null
+                                        ? tvshows[index]['original_name']
+                                        : 'Loading',
+                                    style: TextStyle(color: Colors.white),
+                                  ))
                                 ],
                               ),
                             )

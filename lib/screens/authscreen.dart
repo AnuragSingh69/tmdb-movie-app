@@ -1,11 +1,8 @@
-import 'dart:html';
-
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
 import 'package:provider/provider.dart';
 import 'package:tmdb/helper/httpexception.dart';
 import 'package:tmdb/providers.dart';
-import '../providers.dart';
 
 enum AuthMode { Signup, Login }
 
@@ -23,8 +20,20 @@ class _AuthScreenState extends State<AuthScreen> {
   Map<String, String> _authData = {"email": "", "password": ""};
 
   final _passwordController = TextEditingController();
+  final _emailController = TextEditingController();
 
   var _isLoading = false;
+
+  // Future<void> sendOTP(String email) async {
+  //   FirebaseAuth auth = FirebaseAuth.instance;
+
+  //   try {
+  //     await auth.sendPasswordResetEmail(email: "_email_controller");
+  //     print('OTP sent to $email');
+  //   } catch (e) {
+  //     print('Failed to send OTP: $e');
+  //   }
+  // }
 
   void _showDialog(String message) {
     showDialog(
@@ -33,7 +42,7 @@ class _AuthScreenState extends State<AuthScreen> {
               title: Text("An Error Occured!"),
               content: Text(message),
               actions: [
-                FlatButton(
+                TextButton(
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
@@ -72,7 +81,7 @@ class _AuthScreenState extends State<AuthScreen> {
       if (error.toString().contains("WEAK_PASSWORD")) {
         errorMessage = "Try a Stronger Password";
       }
-      if (error.toString().contains("EMIAL_NOT_FOUND")) {
+      if (error.toString().contains("EMAIL_NOT_FOUND")) {
         errorMessage = "Can't find a user with this email";
       }
       if (error.toString().contains("INVALID_PASSWORD")) {
@@ -105,118 +114,86 @@ class _AuthScreenState extends State<AuthScreen> {
     // final deviceSize = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Colors.black,
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Center(
-              child: Container(
-                width: 500,
-                height: 500,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Center(
+                child: Container(
+                  width: 500,
+                  height: 500,
 
-                //shape: RoundedRectangleBorder(
-                // borderRadius: BorderRadius.circular(10.0)),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        child: Center(
-                          child: Column(
-                            children: [
-                              Text(
-                                "Welcome to TMDB",
-                                style: TextStyle(fontSize: 25),
-                              ),
-                              SizedBox(
-                                height: 15,
-                              ),
-                              Text(
-                                "Login to continue",
-                                style: TextStyle(fontSize: 18),
-                              ),
-                              SizedBox(
-                                height: 15,
-                              ),
-                              Form(
-                                key: _formkey,
-                                child: SingleChildScrollView(
-                                  child: Column(
-                                    children: <Widget>[
-                                      TextFormField(
-                                        decoration: InputDecoration(
-                                            border: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(5)),
-                                            focusedBorder: OutlineInputBorder(
-                                                borderSide: BorderSide(
-                                                    color: Colors.white),
-                                                borderRadius:
-                                                    BorderRadius.circular(5)),
-                                            enabledBorder: OutlineInputBorder(
-                                                borderSide: BorderSide(
-                                                    color: Colors.white),
-                                                borderRadius:
-                                                    BorderRadius.circular(5)),
-                                            labelText: 'Email'),
-                                        textInputAction: TextInputAction.next,
-                                        keyboardType:
-                                            TextInputType.emailAddress,
-                                        validator: (value) {
-                                          if (value!.isEmpty ||
-                                              !value.contains('@')) {
-                                            return 'Invalid email!';
-                                          }
-                                          return null;
-                                        },
-                                        onSaved: (value) {
-                                          _authData['email'] = value!;
-                                        },
-                                      ),
-                                      SizedBox(
-                                        height: 15,
-                                      ),
-                                      TextFormField(
-                                        decoration: InputDecoration(
-                                            border: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(5)),
-                                            focusedBorder: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(5),
-                                                borderSide: BorderSide(
-                                                    color: Colors.white)),
-                                            enabledBorder: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(5),
-                                                borderSide: BorderSide(
-                                                    color: Colors.white)),
-                                            labelText: 'Password'),
-                                        obscureText: true,
-                                        controller: _passwordController,
-                                        validator: (value) {
-                                          if (value!.isEmpty ||
-                                              value.length < 5) {
-                                            return 'Password is too short!';
-                                          }
-                                          return null;
-                                        },
-                                        onSaved: (value) {
-                                          _authData['password'] = value!;
-                                        },
-                                      ),
-                                      SizedBox(
-                                        height: 15,
-                                      ),
-                                      if (_authMode == AuthMode.Signup)
-                                        // SizedBox(
-                                        // height: 15,
-                                        //),
+                  //shape: RoundedRectangleBorder(
+                  // borderRadius: BorderRadius.circular(10.0)),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          child: Center(
+                            child: Column(
+                              children: [
+                                Text(
+                                  "Welcome to TMDB",
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 25),
+                                ),
+                                SizedBox(
+                                  height: 15,
+                                ),
+                                Text(
+                                  "Login to continue",
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 18),
+                                ),
+                                SizedBox(
+                                  height: 15,
+                                ),
+                                Form(
+                                  key: _formkey,
+                                  child: SingleChildScrollView(
+                                    child: Column(
+                                      children: <Widget>[
                                         TextFormField(
-                                          enabled: _authMode == AuthMode.Signup,
+                                          style: TextStyle(color: Colors.white),
+                                          decoration: InputDecoration(
+                                              border: OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(5)),
+                                              focusedBorder: OutlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                      color: Colors.white),
+                                                  borderRadius:
+                                                      BorderRadius.circular(5)),
+                                              enabledBorder: OutlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                      color: Colors.white),
+                                                  borderRadius:
+                                                      BorderRadius.circular(5)),
+                                              labelText: 'Email'),
+                                          textInputAction: TextInputAction.next,
+                                          keyboardType:
+                                              TextInputType.emailAddress,
+                                          validator: (value) {
+                                            if (value!.isEmpty ||
+                                                !value.contains('@')) {
+                                              return 'Invalid email!';
+                                            }
+                                            return null;
+                                          },
+                                          onSaved: (value) {
+                                            _authData['email'] = value!;
+                                          },
+                                        ),
+                                        SizedBox(
+                                          height: 15,
+                                        ),
+                                        TextFormField(
+                                          style: TextStyle(color: Colors.white),
                                           decoration: InputDecoration(
                                               border: OutlineInputBorder(
                                                   borderRadius:
@@ -231,73 +208,113 @@ class _AuthScreenState extends State<AuthScreen> {
                                                       BorderRadius.circular(5),
                                                   borderSide: BorderSide(
                                                       color: Colors.white)),
-                                              labelText: 'Confirm Password'),
+                                              labelText: 'Password'),
                                           obscureText: true,
-                                          validator:
-                                              _authMode == AuthMode.Signup
-                                                  ? (value) {
-                                                      if (value !=
-                                                          _passwordController
-                                                              .text) {
-                                                        return 'Passwords do not match!';
+                                          controller: _passwordController,
+                                          validator: (value) {
+                                            if (value!.isEmpty ||
+                                                value.length < 5) {
+                                              return 'Password is too short!';
+                                            }
+                                            return null;
+                                          },
+                                          onSaved: (value) {
+                                            _authData['password'] = value!;
+                                          },
+                                        ),
+                                        SizedBox(
+                                          height: 15,
+                                        ),
+                                        if (_authMode == AuthMode.Signup)
+                                          // SizedBox(
+                                          // height: 15,
+                                          //),
+                                          TextFormField(
+                                            style:
+                                                TextStyle(color: Colors.white),
+                                            enabled:
+                                                _authMode == AuthMode.Signup,
+                                            decoration: InputDecoration(
+                                                border: OutlineInputBorder(
+                                                    borderRadius: BorderRadius
+                                                        .circular(5)),
+                                                focusedBorder:
+                                                    OutlineInputBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(5),
+                                                        borderSide: BorderSide(
+                                                            color: Colors
+                                                                .white)),
+                                                enabledBorder:
+                                                    OutlineInputBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(5),
+                                                        borderSide: BorderSide(
+                                                            color:
+                                                                Colors.white)),
+                                                labelText: 'Confirm Password'),
+                                            obscureText: true,
+                                            validator:
+                                                _authMode == AuthMode.Signup
+                                                    ? (value) {
+                                                        if (value !=
+                                                            _passwordController
+                                                                .text) {
+                                                          return 'Passwords do not match!';
+                                                        }
                                                       }
-                                                    }
-                                                  : null,
-                                        ),
-                                      SizedBox(
-                                        height: 20,
-                                      ),
-                                      if (_isLoading)
-                                        CircularProgressIndicator()
-                                      else
-                                        RaisedButton(
-                                          child: Text(
-                                              _authMode == AuthMode.Login
-                                                  ? 'LOGIN'
-                                                  : 'SIGN UP'),
-                                          onPressed: _submit,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(30),
+                                                    : null,
                                           ),
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 30.0, vertical: 8.0),
-                                          color: Colors.red,
-                                          textColor: Theme.of(context)
-                                              .primaryTextTheme
-                                              .button!
-                                              .color,
+                                        SizedBox(
+                                          height: 20,
                                         ),
-                                      SizedBox(
-                                        height: 20,
-                                      ),
-                                      FlatButton(
+                                        if (_isLoading)
+                                          CircularProgressIndicator()
+                                        else
+                                          ElevatedButton(
+                                            child: Text(
+                                                _authMode == AuthMode.Login
+                                                    ? 'LOGIN'
+                                                    : 'SIGN UP'),
+                                            onPressed: _submit,
+                                          ),
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                        TextButton(
                                           child: Text(
                                               '${_authMode == AuthMode.Login ? 'New User ? Signup' : 'Already a User ? Login'} '),
                                           onPressed: _switchAuthMode,
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 30.0, vertical: 4),
-                                          materialTapTargetSize:
-                                              MaterialTapTargetSize.shrinkWrap,
-                                          textColor: Colors.white
+
                                           //Theme.of(context).primaryColor,
-                                          ),
-                                    ],
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
+                                SizedBox(
+                                  height: 15,
+                                ),
+                                ElevatedButton(
+                                    onPressed: () {
+                                      // sendOTP(_emailController.toString());
+                                    },
+                                    child: Text("Send OTP"))
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                      //SizedBox(height: 20),
-                    ],
+                        //SizedBox(height: 20),
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-        ]),
+          ]),
+        ),
       ),
     );
   }

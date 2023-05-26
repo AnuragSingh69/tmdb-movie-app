@@ -69,7 +69,9 @@ class _FavoritesState extends State<Favorites> {
                               Text(
                                 favorites[index]["name"],
                                 style: TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.bold),
+                                    color: Colors.white,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold),
                               ),
                               SizedBox(
                                 height: 6,
@@ -77,7 +79,9 @@ class _FavoritesState extends State<Favorites> {
                               Text(
                                 "Released - ${favorites[index]["release"] ?? '--'}",
                                 style: TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.w400),
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w400),
                               ),
                               SizedBox(
                                 height: 12,
@@ -90,6 +94,7 @@ class _FavoritesState extends State<Favorites> {
                                   Text(
                                     "⭐ ${favorites[index]["rating"] ?? '--'}",
                                     style: TextStyle(
+                                        color: Colors.white,
                                         fontSize: 16,
                                         fontWeight: FontWeight.w500),
                                   ),
